@@ -1,0 +1,97 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace OXA9ST_E_roller_
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            int varosokszama;
+            do
+            {
+                Console.Write("Adja meg, hány városban üzemeltetnek rollereket (10 és 45 között): ");
+                varosokszama = int.Parse(Console.ReadLine());
+            } while (varosokszama < 10 || varosokszama > 45);
+
+            int osszesroller = varosokszama * 50;
+            double[] aksiszint = new double[osszesroller];
+
+           
+            Random random = new Random();
+            for (int i = 0; i < osszesroller; i++)
+            {
+                aksiszint[i] = Math.Round(random.NextDouble() * 69.9 + 30.1, 1);
+            }
+
+         
+            double alatt60 = 0;
+            int szamolo60 = 0;
+            foreach (var battery in aksiszint)
+            {
+                if (battery < 60)
+                {
+                    alatt60 += battery;
+                    szamolo60++;
+                }
+            }
+            double avgBelow60 = szamolo60 > 0 ? alatt60 / szamolo60 : 0;
+            Console.WriteLine($"60% alatti rollerek átlagos töltöttsége: {avgBelow60:F1}%");
+
+            // d) Több-e a 30,1% vagy a 100% töltöttségű rollerek száma?
+            int szamol30_1 = 0, szamolo100 = 0;
+            foreach (var aksi in aksiszint)
+            {
+                if (aksi == 30.1) szamol30_1++;
+                if (aksi == 100) szamolo100++;
+            }
+            Console.WriteLine(szamol30_1 > szamolo100 ? "30,1%-os rollerekből van több." : "100%-os rollerekből van több.");
+
+            // e) Város szerinti feladatok
+            double minatlg = 100;
+            int minatlgvaros = -1;
+            bool arosatl80 = false;
+            int alacsonakksico = 0;
+
+            for (int i = 0; i < varosokszama; i++)
+            {
+                double citySum = 0;
+                bool folott80 = true;
+                for (int j = 0; j < 50; j++)
+                {
+                    double battery = aksiszint[i * 50 + j];
+                    citySum += battery;
+                    if (battery <= 80) folott80 = false;
+                }
+
+                double varosatlg = citySum / 50;
+                if (varosatlg < minatlg)
+                {
+                    minatlg = varosatlg;
+                    minatlgvaros = i + 1;
+                }
+
+                if (folott80) arosatl80 = true;
+
+            //=================================================================
+                int randorndroller = i * 50 + random.Next(50);
+                double csokken = random.Next(41);
+                aksiszint[randorndroller] = Math.Max(0, aksiszint[randorndroller] - csokken);
+
+                if (aksiszint[randorndroller] < 10) alacsonakksico++;
+            }
+            //===========================================================================
+            Console.WriteLine($"A legalacsonyabb átlagos töltöttségi szint a(z) {minatlgvaros}. városban van: {minatlg:F1}%");
+            Console.WriteLine(arosatl80 ? "Van olyan város, ahol minden roller töltöttsége 80% fölött van." : "Nincs olyan város, ahol minden roller töltöttsége 80% fölött van.");
+            Console.WriteLine($"{alacsonakksico} roller töltöttsége csökkent 10% alá.");
+            Console.ReadKey();
+
+        }
+      
+        
+        }
+    }
+
