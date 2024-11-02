@@ -1,0 +1,80 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace OXA9ST_LearntoLive_
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            string[] termeszettudomany = { "fizika", "kémia", "biológia" };
+            string[] informatika = { "programozás", "robotika" };
+            string[] bolcseszettudomany = { "történelem", "nyelvtan", "angol", "német" };
+
+            int termeszettudomanyIdo = 60;
+            int informatikaIdo = 90;
+            int bolcseszettudomanyIdo = 45;
+
+            int napidomax = 240;
+            int teljesHetiIdo = 0;
+            int hetifognum = 0;
+            List<string> hetiOrarend = new List<string>();
+            int nap = 1;
+
+            while (nap <= 5)
+            {
+                int napiIdo = 0;
+                Console.WriteLine($"{nap}. nap - Adja meg a foglalkozásokat:");
+
+                while (napiIdo < napidomax)
+                {
+                    Console.Write("Foglalkozás: ");
+                    string foglalkozas = Console.ReadLine().ToLower();
+
+                    if (foglalkozas == "következő")
+                        break;
+
+                    int idotartam = 0;
+
+                    if (Array.Exists(termeszettudomany, elem => elem == foglalkozas))
+                        idotartam = termeszettudomanyIdo;
+                    else if (Array.Exists(informatika, elem => elem == foglalkozas))
+                        idotartam = informatikaIdo;
+                    else if (Array.Exists(bolcseszettudomany, elem => elem == foglalkozas))
+                        idotartam = bolcseszettudomanyIdo;
+                    else
+                    {
+                        Console.WriteLine("Ez a tárgy ismeretlen, kérem próbálja ójra!");
+                        continue;
+                    }
+
+                    if (napiIdo + idotartam > napidomax)
+                    {
+                        Console.WriteLine("Ez a tárgy már nem fér bele az időbe a mai nap folyamán.");
+                        break;
+                    }
+
+
+                    napiIdo += idotartam;
+                    teljesHetiIdo += idotartam;
+                    hetiOrarend.Add(foglalkozas);
+                    hetifognum++;
+                }
+
+                nap++;
+            }
+
+         
+            int ora = teljesHetiIdo / 60;
+            int perc = teljesHetiIdo % 60;
+
+            Console.WriteLine($"A héten összesen {hetifognum} foglalkozás lesz.");
+            Console.WriteLine($"Teljes időtartam: {ora:D2}:{perc:D2}");
+            Console.ReadKey();
+
+        }
+    }
+}
