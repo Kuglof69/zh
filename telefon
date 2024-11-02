@@ -1,0 +1,96 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace OXA9ST_telefon_
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            int miniDij = 4990;
+            int normalDij = 8590;
+            int fullosDij = 13990;
+            int miniHivasDij = 25;
+            int miniSmsDij = 25; 
+            int normalSmsDij = 20; 
+            int extraAdatAr = 1600;
+
+            Console.WriteLine("Szeretne korlátlan hálózaton belüli és EU-s hívást? (igen/nem)");
+            string korlatlanHivasValasz = Console.ReadLine().ToLower();
+
+            string ajanlottCsomag = "Mini";
+            int csomagDij = miniDij;
+            int csomagSmsDij = miniSmsDij;
+            int csomagHivasDij = miniHivasDij;
+            double adatLimitGB = 1;
+            int extraGBAr = 1250;
+
+            if (korlatlanHivasValasz == "igen")
+            {
+                Console.WriteLine("Becsülje meg az adatforgalmát! (6 vagy 15 GB)");
+                int adatForrgalom = int.Parse(Console.ReadLine());
+
+                if (adatForrgalom == 6)
+                {
+                    ajanlottCsomag = "Normál";
+                    csomagDij = normalDij;
+                    csomagSmsDij = normalSmsDij;
+                    adatLimitGB = 6;
+                    extraGBAr = 1050;
+                }
+                else if (adatForrgalom == 15)
+                {
+                    ajanlottCsomag = "Fullos";
+                    csomagDij = fullosDij;
+                    adatLimitGB = 1.5;
+                    extraGBAr = 900;
+                }
+            }
+
+            if (ajanlottCsomag == "Mini" || ajanlottCsomag == "Normál")
+            {
+                Console.WriteLine("Szeretne havi 1600 Ft-ért plusz 1,5 GB adatforgalmat? (igen/nem)");
+                string extraAdatValasz = Console.ReadLine().ToLower();
+                if (extraAdatValasz == "igen")
+                {
+                    csomagDij += extraAdatAr;
+                    adatLimitGB += 1.5;
+                }
+            }
+
+            Random rand = new Random();
+            int hivasPercek = rand.Next(0, 360);
+            int elkuldottSms = rand.Next(0, 100);
+            double adatHasznalat = Math.Round(rand.NextDouble() * 7.5, 2);
+
+            double haviSzamla = csomagDij;
+            if (ajanlottCsomag == "Mini")
+            {
+                haviSzamla += hivasPercek * csomagHivasDij + elkuldottSms * csomagSmsDij;
+            }
+            else if (ajanlottCsomag == "Normál")
+            {
+                haviSzamla += elkuldottSms * csomagSmsDij;
+            }
+
+            if (adatHasznalat > adatLimitGB)
+            {
+                double extraGB = Math.Ceiling(adatHasznalat - adatLimitGB);
+                haviSzamla += extraGB * extraGBAr;
+            }
+
+            Console.WriteLine("\nA magának ajánlott csomag: " + ajanlottCsomag);
+            Console.WriteLine("Hívással tölthető percek: " + hivasPercek);
+            Console.WriteLine("Elküldhető SMS-ek száma: " + elkuldottSms);
+            Console.WriteLine("Adathasználat belföldön (GB): " + adatHasznalat);
+            Console.WriteLine("Várható havi számla: " + haviSzamla + " Ft");
+            Console.WriteLine("Köszönjük hogy A GigaPhonet választotta! :)");
+
+
+            Console.ReadKey();
+        }
+    }
+}
